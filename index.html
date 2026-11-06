@@ -6,6 +6,7 @@
 <title>Salman Faris — Data Analyst & Fixed Asset Specialist</title>
 <meta name="description" content="Salman Faris — Data Analyst specializing in fixed asset management, reconciliation and business intelligence.">
 <script>
+  document.documentElement.classList.add('js');
   // Set theme before first paint to avoid a flash of the wrong theme.
   (function(){
     try{
@@ -581,6 +582,153 @@
     color:var(--teal); opacity:0.7;
   }
   .mini-sparkline{display:block; opacity:0.9;}
+
+  /* =====================================================================
+     MOTION LAYER — typing-on-scroll + site-wide animation
+     (added on top of the original styles; everything is gated behind the
+     .js class so the page still works if scripts fail)
+     ===================================================================== */
+
+  @keyframes caretBlink{ 0%,49%{opacity:1;} 50%,100%{opacity:0;} }
+  @keyframes stIn{ from{opacity:0; transform:translateY(18px) scale(.96);} }
+  @keyframes photoIn{
+    from{opacity:0; transform:translateY(34px) scale(.92) rotate(-2deg);}
+    to{opacity:1; transform:none;}
+  }
+  @keyframes drawLine{ to{stroke-dashoffset:0;} }
+  @keyframes dotPulse{
+    0%{box-shadow:0 0 0 0 rgba(73,211,196,.55);}
+    100%{box-shadow:0 0 0 14px rgba(73,211,196,0);}
+  }
+  @keyframes floaty{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
+  @keyframes accentGlow{
+    0%,100%{text-shadow:0 0 0 rgba(73,211,196,0);}
+    50%{text-shadow:0 0 26px rgba(73,211,196,.38);}
+  }
+  @keyframes dotBlink{ 0%,49%{opacity:1;} 50%,100%{opacity:.15;} }
+
+  /* ---------- TYPING EFFECT ---------- */
+  /* Text is hidden only until the script has wrapped it, then each character
+     is revealed one by one. Layout never shifts because the hidden characters
+     still occupy their final space. */
+  .js .hero .eyebrow, .js .hero h1, .js .hero p.lede,
+  .js section:not(.hero) .eyebrow,
+  .js .head h2, .js .about h2, .js .contact h2,
+  .js .about p, .js .contact-info p,
+  .js .job-role, .js .job-company, .js .job li,
+  .js .project-title, .js .project-desc,
+  .js .skill-cat h3, .js .edu .card h3, .js .cert-item > span:last-child{
+    visibility:hidden;
+  }
+  .js .ty-ready{ visibility:visible !important; }
+
+  .tw{ display:inline; }
+  .tc{ position:relative; }
+  .js .tc{ opacity:0; }
+  .js .tc.on{ opacity:1; }
+  .tc.cur::after{
+    content:''; position:absolute; top:6%; bottom:6%; right:-2px; width:2px;
+    background:var(--teal); border-radius:1px;
+    animation:caretBlink .8s steps(1) infinite;
+  }
+
+  /* ---------- SCROLL PROGRESS BAR ---------- */
+  .scroll-progress{
+    position:fixed; top:0; left:0; width:100%; height:3px; z-index:200;
+    transform:scaleX(0); transform-origin:left center; pointer-events:none;
+    background:linear-gradient(90deg,var(--teal),var(--violet),var(--amber));
+  }
+
+  /* ---------- NAV ---------- */
+  header.nav{ transition:background .3s ease, box-shadow .3s ease; }
+  header.nav.scrolled{ box-shadow:0 12px 32px -20px rgba(0,0,0,.65); }
+  nav.links a.active{ color:var(--ink-text); }
+  nav.links a.active::after{ width:100%; }
+  .logo .dot{ animation:dotBlink 1.2s steps(1) infinite; }
+
+  /* ---------- HERO ENTRANCE ---------- */
+  .js .hero-visual{ opacity:0; }
+  .js .hero-ctas, .js .facts .fact{ opacity:0; }
+  .hero-go .hero-visual{ animation:photoIn 1.2s cubic-bezier(.2,.8,.2,1) .1s forwards; }
+  .hero-sub .hero-ctas{ opacity:1; animation:stIn .8s cubic-bezier(.2,.8,.2,1) backwards; }
+  .hero-sub .facts .fact{
+    opacity:1; animation:stIn .7s cubic-bezier(.2,.8,.2,1) backwards;
+    animation-delay:calc(var(--i,0) * 90ms + 250ms);
+  }
+  .facts .fact:nth-child(1){--i:0;} .facts .fact:nth-child(2){--i:1;}
+  .facts .fact:nth-child(3){--i:2;} .facts .fact:nth-child(4){--i:3;}
+  .hero h1 .accent{ animation:accentGlow 4.5s ease-in-out 3s infinite; }
+
+  /* ---------- SCROLL REVEAL VARIANTS ---------- */
+  .reveal{ transition:opacity .9s ease, transform .9s cubic-bezier(.2,.75,.2,1); }
+  .reveal.from-left{ transform:translateX(-48px); }
+  .reveal.from-right{ transform:translateX(48px); }
+  .reveal.zoom{ transform:translateY(40px) scale(.94); }
+  .reveal.in{ opacity:1; transform:none; }
+
+  /* project cards keep their quick tilt transition once the entrance is done */
+  .project-card.reveal:not(.settled){
+    transition:opacity .9s ease, transform .9s cubic-bezier(.2,.75,.2,1),
+               border-color .25s ease, box-shadow .25s ease;
+  }
+  .project-card.reveal.settled{
+    transition:transform .18s ease-out, border-color .25s ease, box-shadow .25s ease;
+  }
+
+  /* ---------- STAGGERED CHILDREN (chips, tags, cards, rows) ---------- */
+  .reveal:not(.in) .st{ opacity:0; }
+  .reveal.in .st{
+    animation:stIn .6s cubic-bezier(.2,.8,.2,1) backwards;
+    animation-delay:calc(var(--i,0) * 70ms + 250ms);
+  }
+
+  /* section eyebrow line draws in */
+  .eyebrow::before{ transition:width .9s cubic-bezier(.2,.75,.2,1) .15s; }
+  .reveal:not(.in) .eyebrow::before{ width:0; }
+
+  /* ---------- TIMELINE ---------- */
+  .timeline{ position:relative; }
+  .timeline::before{
+    content:''; position:absolute; left:-1px; top:0; width:2px;
+    height:calc(var(--tl,0) * 100%);
+    background:linear-gradient(180deg,var(--teal),var(--violet));
+    border-radius:2px; pointer-events:none;
+  }
+  .job::before{ transition:background .5s ease .2s; }
+  .job.in::before{ background:var(--teal); animation:dotPulse 1.8s ease-out .3s 2; }
+
+  /* ---------- PROJECT PREVIEW LINES DRAW IN ---------- */
+  .js .project-card .chartline polyline{ stroke-dasharray:700; stroke-dashoffset:700; }
+  .js .project-card.in .chartline polyline{ animation:drawLine 1.8s ease .35s forwards; }
+
+  /* ---------- BUTTONS / FORM / MISC MICRO-INTERACTIONS ---------- */
+  .btn-primary{ position:relative; overflow:hidden; }
+  .btn-primary::after{
+    content:''; position:absolute; top:0; left:-120%; width:55%; height:100%;
+    background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);
+    transform:skewX(-20deg); transition:left .7s ease; pointer-events:none;
+  }
+  .btn-primary:hover::after{ left:140%; }
+  .btn:active{ transform:translateY(0) scale(.98); }
+  input, textarea{ transition:border-color .2s ease, box-shadow .25s ease; }
+  input:focus, textarea:focus{ outline:none; box-shadow:0 0 0 3px rgba(73,211,196,.22); }
+  .to-top{ transition:color .2s ease, border-color .2s ease, transform .2s ease; }
+  .to-top:hover{ transform:translateY(-3px); }
+  .info-row{ transition:padding-left .25s ease; }
+  .info-row:hover{ padding-left:8px; }
+  .cert-item{ transition:border-color .2s ease, transform .2s ease; }
+  .cert-item:hover{ border-color:rgba(73,211,196,.4); transform:translateX(4px); }
+  .stat-row{ transition:padding-left .25s ease; }
+  .stat-row:hover{ padding-left:8px; }
+  .sp-graphic{ animation:floaty 8s ease-in-out infinite; }
+
+  /* ---------- REDUCED MOTION SAFETY ---------- */
+  @media (prefers-reduced-motion:reduce){
+    .js .hero-visual, .js .hero-ctas, .js .facts .fact, .reveal:not(.in) .st{ opacity:1 !important; }
+    .js .project-card .chartline polyline{ stroke-dashoffset:0 !important; }
+    .job::before, .logo .dot, .timeline::before{ animation:none !important; }
+    .scroll-progress{ display:none; }
+  }
 </style>
 </head>
 <body>
@@ -1265,7 +1413,7 @@
         const step = Math.max(1, Math.round(target/28));
         const tick = ()=>{
           current = Math.min(target, current+step);
-          el.textContent = current + suffix;
+          el.textContent = String(current).padStart(match[1].length, '0') + suffix;
           if(current < target) requestAnimationFrame(tick);
         };
         tick();
@@ -1389,7 +1537,7 @@
   // scroll reveal
   const io = new IntersectionObserver((entries)=>{
     entries.forEach(e=>{
-      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); if(window.__onReveal) window.__onReveal(e.target); }
     });
   }, {threshold:0.15});
   document.querySelectorAll('.reveal').forEach(el=> io.observe(el));
@@ -1418,6 +1566,212 @@
     const mailto = `mailto:salmanfarisots@gmail.com?subject=${encodeURIComponent(subject)}&body=${body}`;
     window.location.href = mailto;
   });
+</script>
+
+<script>
+// =====================================================================
+// MOTION LAYER — typing-on-scroll + site-wide animation
+// =====================================================================
+(function(){
+  'use strict';
+  var root = document.documentElement;
+
+  try{
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var hero = document.querySelector('.hero');
+
+    // Elements that get the typing effect when they scroll into view.
+    // (Keep in sync with the visibility:hidden list in the CSS.)
+    var TYPE_SEL = [
+      '.hero .eyebrow', '.hero h1', '.hero p.lede',
+      'section:not(.hero) .eyebrow',
+      '.head h2', '.about h2', '.contact h2',
+      '.about p', '.contact-info p',
+      '.job-role', '.job-company', '.job li',
+      '.project-title', '.project-desc',
+      '.skill-cat h3', '.edu .card h3', '.cert-item > span:last-child'
+    ];
+    var typeEls = Array.prototype.slice.call(document.querySelectorAll(TYPE_SEL.join(',')));
+
+    /* ---------- 1. REVEAL VARIANTS + STAGGER (no markup changes needed) ---------- */
+    function addClass(sel, cls){
+      document.querySelectorAll(sel).forEach(function(el){ el.classList.add(cls); });
+    }
+    addClass('.about .wrap > .reveal:first-child', 'from-left');
+    addClass('.stat-ledger', 'from-right');
+    addClass('.contact-info', 'from-left');
+    addClass('form.form-card', 'from-right');
+    addClass('.job', 'from-left');
+    addClass('.project-card', 'zoom');
+    document.querySelectorAll('.skill-cat').forEach(function(el, i){
+      el.classList.add(i % 2 === 0 ? 'from-left' : 'from-right');
+    });
+
+    function stagger(sel){
+      document.querySelectorAll(sel).forEach(function(group){
+        Array.prototype.forEach.call(group.children, function(child, i){
+          child.classList.add('st');
+          child.style.setProperty('--i', i);
+        });
+      });
+    }
+    ['.chip-row', '.tag-row', '.certs', '.edu-grid', '.stat-ledger'].forEach(stagger);
+    document.querySelectorAll('.info-row').forEach(function(row, i){
+      row.classList.add('st');
+      row.style.setProperty('--i', i + 2);
+    });
+
+    // called by the original reveal observer once an element fades in
+    window.__onReveal = function(el){
+      if(el.classList && el.classList.contains('project-card')){
+        setTimeout(function(){ el.classList.add('settled'); }, 1100);
+      }
+    };
+
+    /* ---------- 2. TYPING EFFECT ---------- */
+    function prepare(el){
+      if(el._chars) return el._chars;
+      var chars = [];
+      var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+      var nodes = [];
+      while(walker.nextNode()) nodes.push(walker.currentNode);
+      nodes.forEach(function(node){
+        var text = node.nodeValue.replace(/\s+/g, ' ');
+        if(!text.trim()) return;
+        var wrap = document.createElement('span');
+        wrap.className = 'tw';
+        Array.from(text).forEach(function(ch){
+          var s = document.createElement('span');
+          s.className = 'tc';
+          s.textContent = ch;
+          wrap.appendChild(s);
+          chars.push(s);
+        });
+        node.parentNode.replaceChild(wrap, node);
+      });
+      el._chars = chars;
+      el.classList.add('ty-ready');
+      return chars;
+    }
+
+    function typeEl(el, opts){
+      opts = opts || {};
+      return new Promise(function(resolve){
+        var chars = prepare(el), n = chars.length;
+        if(!n){ resolve(); return; }
+        var dur = opts.duration || Math.min(1500, Math.max(380, n * 32));
+        var t0 = performance.now() + (opts.delay || 0);
+        var shown = 0, cur = null;
+        function frame(now){
+          if(now < t0){ requestAnimationFrame(frame); return; }
+          var p = Math.min(1, (now - t0) / dur);
+          var target = Math.floor(p * n);
+          if(target > shown){
+            if(cur) cur.classList.remove('cur');
+            for(var i = shown; i < target; i++) chars[i].classList.add('on');
+            shown = target;
+            cur = chars[shown - 1];
+            cur.classList.add('cur');
+          }
+          if(p < 1){
+            requestAnimationFrame(frame);
+          } else {
+            setTimeout(function(){ if(cur) cur.classList.remove('cur'); }, 900);
+            resolve();
+          }
+        }
+        requestAnimationFrame(frame);
+      });
+    }
+
+    if(reduce || !('IntersectionObserver' in window)){
+      // no typing: show everything immediately
+      typeEls.forEach(function(el){ el.classList.add('ty-ready'); });
+      if(hero) hero.classList.add('hero-go', 'hero-sub');
+    } else {
+      var heroEls = ['.hero .eyebrow', '.hero h1', '.hero p.lede'].map(function(q){
+        return document.querySelector(q);
+      });
+      typeEls.forEach(prepare);
+
+      // typing starts as each element scrolls into view
+      var typeIO = new IntersectionObserver(function(entries){
+        var k = 0;
+        entries.forEach(function(en){
+          if(!en.isIntersecting) return;
+          typeIO.unobserve(en.target);
+          typeEl(en.target, { delay: Math.min(k * 150, 900) });
+          k++;
+        });
+      }, { threshold: 0.25, rootMargin: '0px 0px -8% 0px' });
+
+      typeEls.forEach(function(el){
+        if(heroEls.indexOf(el) === -1) typeIO.observe(el);
+      });
+
+      // hero: one orchestrated sequence on page load
+      if(hero){
+        hero.classList.add('hero-go');
+        var eb = heroEls[0], h1 = heroEls[1], lede = heroEls[2];
+        typeEl(eb, { delay: 300, duration: 520 }).then(function(){
+          setTimeout(function(){ hero.classList.add('hero-sub'); }, 1100);
+          return typeEl(h1, { duration: 1500 });
+        }).then(function(){
+          return typeEl(lede, { duration: 1700 });
+        });
+        // safety net so the buttons can never stay hidden
+        setTimeout(function(){ hero.classList.add('hero-sub'); }, 7000);
+      }
+    }
+
+    /* ---------- 3. SCROLL-DRIVEN: progress bar, nav state, scrollspy, timeline ---------- */
+    var bar = document.createElement('div');
+    bar.className = 'scroll-progress';
+    bar.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(bar);
+
+    var nav = document.querySelector('header.nav');
+    var timeline = document.querySelector('.timeline');
+    var links = Array.prototype.slice.call(document.querySelectorAll('nav.links a'));
+    var sections = ['about', 'experience', 'projects', 'skills', 'education', 'contact']
+      .map(function(id){ return document.getElementById(id); })
+      .filter(Boolean);
+    var ticking = false;
+
+    function update(){
+      ticking = false;
+      var y = window.scrollY || window.pageYOffset;
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.transform = 'scaleX(' + (max > 0 ? Math.min(1, y / max) : 0) + ')';
+      if(nav) nav.classList.toggle('scrolled', y > 24);
+
+      var probe = y + window.innerHeight * 0.35, current = null;
+      sections.forEach(function(s){ if(s.offsetTop <= probe) current = s.id; });
+      links.forEach(function(a){
+        a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+      });
+
+      if(timeline){
+        var r = timeline.getBoundingClientRect();
+        var p = (window.innerHeight * 0.65 - r.top) / r.height;
+        timeline.style.setProperty('--tl', Math.max(0, Math.min(1, p)).toFixed(3));
+      }
+    }
+    function onScroll(){
+      if(ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    update();
+
+  } catch(err){
+    // if anything goes wrong, fall back to the plain, fully visible page
+    root.classList.remove('js');
+    console.warn('Motion layer disabled:', err);
+  }
+})();
 </script>
 
 </body>
